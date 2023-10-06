@@ -4,7 +4,7 @@
       <nuxt-link to="/">
         <h1>Woodnis<span>.</span></h1>
       </nuxt-link>
-      <ul v-show="!props.mobile" class="navigation">
+      <ul v-show="!mobile" class="navigation">
         <li>
           <nuxt-link to="/">Home</nuxt-link>
           <nuxt-link to="about">About</nuxt-link>
@@ -22,21 +22,24 @@
       <img
         @click="toggleMobileNav"
         class="menu-icon"
-        :class="{ 'icon-active': props.mobileNav }"
-        v-show="props.mobile"
+        :class="{ 'icon-active': mobileNav }"
+        v-show="mobile"
         src="~/assets/images/icons/menu.svg"
         alt="Menu icon"
       />
       <transition name="mobile-nav">
         <ul v-show="mobileNav" class="dropdown-nav">
           <li>
-            <nuxt-link to="/">Home</nuxt-link>
-            <nuxt-link to="about">About</nuxt-link>
-            <nuxt-link to="shop">Shop</nuxt-link>
-            <nuxt-link to="blog">Blog</nuxt-link>
-            <nuxt-link to="contact">Contact</nuxt-link>
-            <nuxt-link>
-              <div class="cart" @click="$router.push('/cart')">
+            <!-- <a @click="" href="">Home</a> -->
+            <nuxt-link @click="closeMenuAndNavigate('/')">Home</nuxt-link>
+            <nuxt-link @click="closeMenuAndNavigate('/about')">About</nuxt-link>
+            <nuxt-link @click="closeMenuAndNavigate('/shop')">Shop</nuxt-link>
+            <nuxt-link @click="closeMenuAndNavigate('/blog')">Blog</nuxt-link>
+            <nuxt-link @click="closeMenuAndNavigate('/contact')"
+              >Contact</nuxt-link
+            >
+            <nuxt-link @click="closeMenuAndNavigate('/cart')">
+              <div>
                 <img src="~/assets/images/icons/ion_cart.svg" alt="Menu cart" />
                 <span>{{ cartStore.productsTotal }}</span>
               </div>
@@ -50,29 +53,39 @@
 
 <script setup>
 import { useCartStore } from "~/stores/cart";
+import { useRouter } from "vue-router";
 const cartStore = useCartStore();
 
-const props = defineProps({
-  scroll: {
-    type: null,
-  },
-  mobile: {
-    type: Boolean,
-    default: false,
-  },
-  mobileNav: {
-    type: Boolean,
-    default: false,
-  },
-  windowWidth: {
-    type: Number,
-  },
-});
+const mobileNav = ref(false);
+const mobile = ref(true);
+const windowWidth = ref(null);
+
+const router = useRouter();
 
 const toggleMobileNav = () => {
-  props.mobileNav = !props.mobileNav;
-  console.log("carai", props.mobileNav);
+  mobileNav.value = !mobileNav.value;
 };
+
+const closeMenuAndNavigate = (route) => {
+  mobileNav.value = false;
+  router.push(route);
+};
+
+const checkScreen = () => {
+  windowWidth.value = window.innerWidth;
+  if (windowWidth.value <= 920) {
+    mobile.value = true;
+    return;
+  }
+  mobile.value = false;
+  mobileNav.value = false;
+  return;
+};
+
+onMounted(() => {
+  window.addEventListener("resize", checkScreen);
+  checkScreen();
+});
 </script>
 
 <style lang="scss">
@@ -143,11 +156,9 @@ header {
     height: 20px;
     cursor: pointer;
     transition: 0.8s ease all;
+    z-index: 99;
   }
 
-  .icon-active {
-    transform: rotate(180deg);
-  }
   .dropdown-nav {
     display: flex;
     flex-direction: column;
@@ -160,6 +171,11 @@ header {
     li {
       display: flex;
       flex-direction: column;
+      @media screen and (max-width: 920px) {
+        align-items: center;
+        margin-top: 8rem;
+        gap: 2rem;
+      }
     }
   }
   @media screen and (max-width: 920px) {

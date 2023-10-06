@@ -366,12 +366,22 @@ components: {
 
 const settingsFeat = {
   itemsToShow: 1.5,
+  snapAlign: "center",
 };
 
 const breakpointsFeat = {
   // 920px and up
   920: {
-    itemsToShow: 3.5,
+    itemsToShow: 2.5,
+    snapAlign: "start",
+  },
+  // 920px and up
+  1530: {
+    itemsToShow: 2.5,
+    snapAlign: "start",
+  },
+  1700: {
+    itemsToShow: 3.2,
     snapAlign: "start",
   },
 };
@@ -531,7 +541,7 @@ const breakpointsFeat = {
   list-style: none;
   padding: 1.2rem 6rem;
   align-items: center;
-  @media screen and (max-width: 920px) {
+  @media screen and (max-width: 1700px) {
     grid-template-columns: repeat(1, 1fr);
     padding: 1.2rem 2rem;
     justify-items: center;
@@ -695,6 +705,9 @@ const breakpointsFeat = {
     }
     .carousel__slide {
       justify-content: flex-start;
+      @media screen and (max-width: 920px) {
+        /* justify-content: center; */
+      }
     }
   }
 }
@@ -740,7 +753,7 @@ const breakpointsFeat = {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  @media screen and (max-width: 920px) {
+  @media screen and (max-width: 1700px) {
     gap: 2rem;
     padding: 0 2rem;
     flex-direction: column;
@@ -873,7 +886,7 @@ const breakpointsFeat = {
     display: flex;
     flex-direction: row;
     gap: 4rem;
-    @media screen and (max-width: 920px) {
+    @media screen and (max-width: 1700px) {
       flex-direction: column;
     }
     .article {
@@ -885,6 +898,7 @@ const breakpointsFeat = {
       .image {
         height: 13rem;
         width: -webkit-fill-available;
+        background-size: cover;
       }
       .title {
         color: #787d62;
